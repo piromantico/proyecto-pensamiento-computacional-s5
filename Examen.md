@@ -13,19 +13,15 @@ John Lounsbery, 1977.
 
 ### Imagen de referencia de proyecto
 
-![portada proyecto](assets/IMAGENES/portada%20proyecto.png)
+![portada](IMAGENES/portadaproyecto.png)
 
 ### Integrantes
 
-Estudiante A [usuarioGithub](https://github.com/usuarioGithub)
-
-Estudiante B [usuarioGithub](https://github.com/usuarioGithub)
-
-Estudiante c [usuarioGithub](https://github.com/usuarioGithub)
+Estudiante A [usuarioGithub](https://github.com/piromantico)
 
 ### Enlace de p5.js 
 
-<https://editor.p5js.org>
+https://editor.p5js.org/luxinocte/sketches
 
 ### Relato inicial
 
