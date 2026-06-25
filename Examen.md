@@ -25,11 +25,11 @@ https://editor.p5js.org/luxinocte/sketches
 
 ### Relato inicial
 
-Cuenta acá el relato de origen de tu proyecto. Ej, Alicia está con un conejo, luego va a un viaje psicodélico
+Winnie the Pooh se encuentra en el bosque cuando de repente siente hambre, decide tomar acción e irse a buscar miel.
 
 ### Storyboard
 
-Imágenes del storyboard, las que deben verse acá y estar subidas en el mismo repositorio
+![storyboard](IMAGENES/storyboard.jpg)
 
 ### Estados
 
