@@ -4,11 +4,12 @@
 
 ### Título del proyecto
 
-Nombre de proyecto
+El osito bobito te invita en la búsqueda de su miel 
 
 ### Referencia de origen / bibliografía
 
-Haikú, poema, película, etc. Siempre nombrar autor y año.
+Serie 'winnie The Pooh', 	
+John Lounsbery, 1977.
 
 ### Imagen de referencia de proyecto
 
