@@ -35,11 +35,9 @@ Winnie the Pooh se encuentra en el bosque cuando de repente siente hambre, decid
 
 Describe acá los estados de tu máquina (mínimo 3 para proyectos individuales, 6 para parejas, 9 para tríos), y la condición de salida. Incluye la sección de código que muestra ese estado
 
-#### Estado 1
+#### Estado 0
 
-En el primer estado, con alicia frente al conejo
-
-al hacer scroll, Alicia empieza a caer
+Se nos presenta la primera instrucción, presionar una tecla para iniciar
 
 ```js
 //alicia cae
