@@ -1,62 +1,65 @@
 // ============================================================
-//  ESTADOS DEL JUEGO
-//  Cada número representa una pantalla o momento distinto.
-//  La variable "estado" controla cuál se dibuja en cada frame.
+// Estados del código
+// Cada número representa un momento/interacción distinto
+//  La variable de estado controla cuál se dibujará
 // ============================================================
 const E = {
-  INICIO:         0,   // Pantalla de bienvenida
-  DIALOGO_HAMBRE: 1,   // Pooh dice que tiene hambre
-  CAMINANDO:      2,   // Pooh camina por el bosque buscando miel
-  LLEGO_MIEL:     3,   // Pooh llega al árbol con miel (hay que hacer click)
-  DECISION:       4,   // Pooh agarra la miel (scroll para comer)
-  COMIENDO:       5,   // Pooh come feliz la miel
+  INICIO:                  0,   // Pantalla inicial-instrucción
+  CON_EL_MEDIO_DIENTE:     1,   // Pooh tiene el medio diente
+  NOS_JUIMOS:              2,   // Pooh camina para buscar miel
+  LLEGO_LA_MIEL_CASERITO:  3,   // Pooh llega a la miel
+  TA_SERVIO:               4,   // Pooh agarra la miel (scroll para comer)
+  QUEDE_POCHITO:           5,   // Pooh come feliz la miel
 };
 
 // ============================================================
-//  VARIABLES DE IMÁGENES
-//  Se declaran acá arriba (vacías) y se cargan en preload().
+//  IMÁGENES
+//  Se declaran acá y se cargan en el apartado de preload()
 // ============================================================
-let pooh;             // Pooh parado (pantalla de hambre)
-let fondo1;           // Fondo de día (bosque)
-let camina1;          // Frame 1 de la animación caminando
-let camina2;          // Frame 2 de la animación caminando
-let fondo2;           // Fondo de noche (bosque oscuro)
-let img_miel;         // (reservada, no se usa actualmente)
-let img_comiendo;     // (reservada, no se usa actualmente)
+let pooh;             // Pooh parado - con hambre
+let fondo1;           // Fondo de día
+let camina1;          // Frame 1 caminando
+let camina2;          // Frame 2 caminando
+let fondo2;           // Fondo de noche
+let img_miel;         // Fondo día con la miel
+let img_comiendo;     // Pooh comiendo
 let img_miel1;        // Fondo del árbol con miel
 let img_mielagarrada; // Fondo cuando Pooh agarra la miel
-let img_poohladito;   // Pooh de lado mirando la miel
-let img_poohagarro;   // Pooh en el momento de agarrar la miel
-let img_poohcomio;    // Pooh comiendo la miel (escena final)
+let img_poohladito;   // Pooh de lado mirando a la miel
+let img_poohagarro;   // Pooh agarrando la miel
+let img_poohcomio;    // Pooh comiendo la miel - fin
 
-// ── Fuente personalizada ─────────────────────────────────────
-let miFuente; // Tipografía pixelada VCR que se usa en los textos
+// Fuente pixeleada
+let miFuente; // se declara tipografía personalizada
 
 // ============================================================
-//  VARIABLES DE MÚSICA
+//  CANCIÓN DE FONDO
 // ============================================================
-let cancion;                        // El archivo de audio cargado
-let musicaIniciada = false;         // Si la música ya está sonando
-let tiempoInicio   = 0;             // Momento (en ms) en que empezó
-const DURACION_CANCION = 30000;     // La canción dura 30 segundos;
-                                    // al terminar, el juego se reinicia
+let cancion;                        // se declara el archivo de la canción
+let musicaIniciada = false;         // la música ya está sonando
+let tiempoInicio   = 0;             // Momento (en milisegundos) en que empieza la música
+const DURACION_CANCION = 30000;     // la canción durará 30 segundos
 
 // ============================================================
 //  CONSTANTES DE CONFIGURACIÓN
-//  Centralizar estos valores acá hace fácil ajustarlos sin
-//  tener que buscarlos por todo el código.
+//  al poner estos valores acá es fácil ajustarlos sin buscarlos por el código
 // ============================================================
-const VELOCIDAD_FONDO    = 2000; // ms entre cada cambio de fondo (día/noche)
-const VELOCIDAD_CAMINATA = 300;  // ms entre cada frame de la animación de Pooh
+const VELOCIDAD_FONDO    = 2000; // milisegundos entre cada cambio de fondo (día/noche)
+const VELOCIDAD_CAMINATA = 300;  // milisegundos entre cada frame de la animación de Pooh
 const VELOCIDAD_POOH     = 3;    // píxeles que avanza Pooh por frame
 
 // Posición y tamaño del área clickeable de la miel
-const MIEL_X = 500;
-const MIEL_Y = 400;
-const MIEL_W = 300;
-const MIEL_H = 300;
-const DEBUG_MIEL = false; // Si es true, dibuja un rectángulo rojo
-                          // sobre el área clickeable (útil para ajustar)
+// MIEL_W y MIEL_H se asignan en setup() porque windowWidth/Height
+// no están disponibles antes de que p5.js arranque
+const MIEL_X = 0;
+const MIEL_Y = 0;
+let MIEL_W; // se asigna en setup() → ocupa todo el ancho
+let MIEL_H; // se asigna en setup() → ocupa todo el alto
+const DEBUG_MIEL = true; // Si es true, dibuja un rectángulo rojo sobre el área clickeable
+
+// Posición fija de Pooh en las escenas de la miel
+// (antes era MIEL_X - POOH_W - 10, pero con MIEL_X=0 quedaba fuera de pantalla)
+const POOH_MIEL_X = 190; // ajustá este valor según tu fondo
 
 // Tamaño y posición vertical de Pooh en la mayoría de las escenas
 const POOH_W = 200;
@@ -66,14 +69,14 @@ const POOH_Y = 500; // Posición Y fija para que siempre esté "parado"
 // ============================================================
 //  VARIABLES INTERNAS (cambian durante el juego)
 // ============================================================
-let estado;                          // Estado actual del juego (usa E.XXXX)
+let estado = 0;                      // Estado actual del juego (usa E.XXXX)
 let es_dia              = true;      // Alterna entre fondo de día y noche
 let ultimo_cambio_fondo = 0;         // Último momento en que cambió el fondo
 let tiempo_inicio_caminata = 0;      // Momento en que empezó la caminata
 const DURACION_INTERCALADO = 10000;  // 10s intercalando fondos, luego fondo de miel
 
 // Animación de caminata: alterna entre camina1 y camina2
-let pooh_x;            // Posición horizontal de Pooh mientras camina
+let pooh_x;             // Posición horizontal de Pooh mientras camina
 let frame_caminata = 0; // 0 = camina1, 1 = camina2
 let ultimo_frame   = 0; // Último momento en que cambió el frame
 
@@ -106,6 +109,9 @@ function preload() {
 // ============================================================
 function setup() {
   createCanvas(windowWidth, windowHeight); // Canvas del tamaño de la ventana
+  // Ahora sí windowWidth/Height están disponibles, se asignan acá
+  MIEL_W = windowWidth;
+  MIEL_H = windowHeight;
   textFont(miFuente);
   textAlign(CENTER, CENTER); // Todos los textos centrados por defecto
   print('El osito bobito te invita en la búsqueda de su miel');
@@ -148,12 +154,12 @@ function draw() {
 
   // Delega el dibujo al estado actual
   switch (estado) {
-    case E.INICIO:         dibujar_inicio();         break;
-    case E.DIALOGO_HAMBRE: dibujar_dialogo_hambre(); break;
-    case E.CAMINANDO:      dibujar_caminando();      break;
-    case E.LLEGO_MIEL:     dibujar_llego_miel();     break;
-    case E.DECISION:       dibujar_decision();        break;
-    case E.COMIENDO:       dibujar_comiendo();        break;
+    case E.INICIO:                dibujar_inicio();         break;
+    case E.CON_EL_MEDIO_DIENTE:  dibujar_dialogo_hambre(); break;
+    case E.NOS_JUIMOS:           dibujar_caminando();      break;
+    case E.LLEGO_LA_MIEL_CASERITO: dibujar_llego_miel();   break;
+    case E.TA_SERVIO:            dibujar_decision();       break;
+    case E.QUEDE_POCHITO:        dibujar_comiendo();       break;
   }
 }
 
@@ -168,7 +174,7 @@ function dibujar_inicio() {
 }
 
 // ============================================================
-//  ESTADO 1 · DIÁLOGO DE HAMBRE
+//  ESTADO 1 · CON EL MEDIO DIENTE
 //  Pooh aparece parado y avisa que tiene hambre.
 // ============================================================
 function dibujar_dialogo_hambre() {
@@ -180,7 +186,7 @@ function dibujar_dialogo_hambre() {
 }
 
 // ============================================================
-//  ESTADO 2 · CAMINANDO
+//  ESTADO 2 · NOS JUIMOS
 //  Pooh atraviesa la pantalla animado. El fondo alterna día/noche
 //  durante 10 segundos y luego cambia al fondo del árbol de miel.
 // ============================================================
@@ -218,14 +224,14 @@ function dibujar_caminando() {
 }
 
 // ============================================================
-//  ESTADO 3 · LLEGÓ LA MIEL
+//  ESTADO 3 · LLEGÓ LA MIEL CASERITO
 //  Pooh está parado mirando la miel. El usuario debe hacer click
 //  dentro del área de la miel para avanzar.
 // ============================================================
 function dibujar_llego_miel() {
   image(img_miel1, 0, 0, width, height);
-  // Pooh a la izquierda de la miel (MIEL_X - ancho - margen)
-  image(img_poohladito, MIEL_X - POOH_W - 10, MIEL_Y, POOH_W, POOH_H);
+  // Pooh en posición fija a la izquierda
+  image(img_poohladito, POOH_MIEL_X, POOH_Y, POOH_W, POOH_H);
 
   // Modo debug: dibuja el rectángulo clickeable en rojo
   if (DEBUG_MIEL) {
@@ -240,18 +246,18 @@ function dibujar_llego_miel() {
 }
 
 // ============================================================
-//  ESTADO 4 · DECISIÓN (agarró la miel)
+//  ESTADO 4 · TA SERVIO'
 //  Pooh ya tiene la miel. Hay que hacer scroll hacia arriba para comer.
 // ============================================================
 function dibujar_decision() {
   image(img_mielagarrada, 0, 0, width, height); // Fondo con miel agarrada
-  image(img_poohagarro, MIEL_X - POOH_W - 10, MIEL_Y, POOH_W, POOH_H);
+  image(img_poohagarro, POOH_MIEL_X, POOH_Y, POOH_W, POOH_H);
   nube_texto('¡Encontré la miel, comeré jeje!', width / 2, 80);
   nube_texto('(scroll up para comer)', width / 2, 165, 14);
 }
 
 // ============================================================
-//  ESTADO 5 · COMIENDO
+//  ESTADO 5 · QUEDÉ POCHITO
 //  Pooh come la miel feliz. Scroll hacia abajo reinicia el juego.
 // ============================================================
 function dibujar_comiendo() {
@@ -262,8 +268,8 @@ function dibujar_comiendo() {
     image(fondo1, 0, 0, width, height);
   }
 
-  // Pooh comiendo, en la misma posición que en los estados anteriores
-  image(img_poohcomio, MIEL_X - POOH_W - 10, MIEL_Y, POOH_W, POOH_H);
+  // Pooh comiendo en posición fija
+  image(img_poohcomio, POOH_MIEL_X, POOH_Y, POOH_W, POOH_H);
 
   nube_texto('¡Qué rica miel! jeje', width / 2, 80);
   nube_texto('(scroll down para volver a empezar)', width / 2, 120, 14);
@@ -299,50 +305,50 @@ function nube_texto(msg, x, y, tam = 20) {
 // ============================================================
 function keyPressed() {
   if (estado === E.INICIO) {
-    estado = E.DIALOGO_HAMBRE;
+    estado = E.CON_EL_MEDIO_DIENTE;
     cancion.play();          // Inicia la música al comenzar
     cancion.setVolume(0.9);
     musicaIniciada = true;
     tiempoInicio   = millis();
   }
-  else if (estado === E.DIALOGO_HAMBRE) {
-    estado = E.CAMINANDO;
+  else if (estado === E.CON_EL_MEDIO_DIENTE) {
+    estado = E.NOS_JUIMOS;
     ultimo_cambio_fondo    = millis(); // Reinicia el temporizador del fondo
     tiempo_inicio_caminata = millis(); // Marca cuándo empezó la caminata
     pooh_x = -POOH_W;                 // Pooh parte desde fuera de pantalla
   }
-  else if (estado === E.CAMINANDO) {
-    estado = E.LLEGO_MIEL; // El usuario decide que ya "llegó"
+  else if (estado === E.NOS_JUIMOS) {
+    estado = E.LLEGO_LA_MIEL_CASERITO; // El usuario decide que ya "llegó"
   }
 }
 
 // ============================================================
 //  EVENTO DE CLICK
-//  Solo activo en el estado LLEGO_MIEL.
-//  Verifica si el click cayó dentro del área de la miel.
+//  Solo activo en el estado LLEGO_LA_MIEL_CASERITO.
+//  Verifica si el click cayó dentro del área de la miel (toda la pantalla).
 // ============================================================
 function mousePressed() {
-  if (estado === E.LLEGO_MIEL) {
+  if (estado === E.LLEGO_LA_MIEL_CASERITO) {
     if (
       mouseX > MIEL_X && mouseX < MIEL_X + MIEL_W &&
       mouseY > MIEL_Y && mouseY < MIEL_Y + MIEL_H
     ) {
-      estado = E.DECISION; // ¡Le dio a la miel!
+      estado = E.TA_SERVIO; // ¡Le dio a la miel!
     }
   }
 }
 
 // ============================================================
 //  EVENTO DE SCROLL
-//  Scroll arriba (delta > 0) en DECISION → pasa a COMIENDO.
-//  Scroll abajo (delta < 0) en COMIENDO  → reinicia el juego.
+//  Scroll arriba (delta > 0) en TA_SERVIO    → pasa a QUEDE_POCHITO.
+//  Scroll abajo (delta < 0) en QUEDE_POCHITO → reinicia el juego.
 //  return false evita que la página haga scroll normal.
 // ============================================================
 function mouseWheel(event) {
-  if (estado === E.DECISION && event.delta > 0) {
-    estado = E.COMIENDO;
+  if (estado === E.TA_SERVIO && event.delta > 0) {
+    estado = E.QUEDE_POCHITO;
   }
-  if (estado === E.COMIENDO && event.delta < 0) {
+  if (estado === E.QUEDE_POCHITO && event.delta < 0) {
     reiniciar();
   }
   return false;
