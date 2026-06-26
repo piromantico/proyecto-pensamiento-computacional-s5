@@ -17,7 +17,7 @@ John Lounsbery, 1977.
 
 ### Integrantes
 
-Estudiante A [usuarioGithub](https://github.com/piromantico)
+Alejandro Fernández [usuarioGithub](https://github.com/piromantico)
 
 ### Enlace de p5.js 
 
