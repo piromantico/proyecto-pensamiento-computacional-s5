@@ -11,6 +11,8 @@ El osito bobito te invita en la búsqueda de su miel
 Serie 'Winnie The Pooh', 	
 John Lounsbery, 1977.
 
+Imagenes originales extraídas de frames de la serie y character sheets.
+
 ### Imagen de referencia de proyecto
 
 ![portada](IMAGENES/portadaproyecto.png)
